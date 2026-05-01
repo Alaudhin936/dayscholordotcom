@@ -1,0 +1,1 @@
+import{s,P as r,b as t,j as a}from"./index-DEzI5g8Y.js";s("div")(({theme:e})=>({backgroundColor:e.vars.palette.grey[100],minHeight:"100vh"}));r.any,r.any;function n(){return t(e=>e.breakpoints.down("md")),a.jsx("div",{children:"de"})}export{n as default};
