@@ -21,11 +21,342 @@
 
     <meta name="author" content="CodedThemes" />
     <script defer src="https://fomo.codedthemes.com/pixel/jAgJNY0WuNyOO0aM7ql1AqLRKRH5d737"></script>
-    <script type="module" crossorigin src="/assets/index-BcuLkAQh.js"></script>
+    <style>
+      #initial-loader {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background: #ffffff;
+        z-index: 9999;
+        opacity: 1;
+        transition: opacity 0.5s ease, filter 0.5s ease, transform 0.5s ease;
+      }
+      #initial-loader.is-hidden {
+        opacity: 0;
+        filter: blur(6px);
+        transform: scale(1.02);
+        pointer-events: none;
+      }
+
+      /* ambient brand-color glow, purely decorative */
+      #initial-loader .il-blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(70px);
+        opacity: 0.22;
+        will-change: transform;
+      }
+      #initial-loader .il-blob.b1 {
+        width: 300px;
+        height: 300px;
+        top: -100px;
+        left: -80px;
+        background: #6366f1;
+        animation: il-float-a 9s ease-in-out infinite;
+      }
+      #initial-loader .il-blob.b2 {
+        width: 260px;
+        height: 260px;
+        bottom: -90px;
+        right: -60px;
+        background: #10b981;
+        animation: il-float-b 11s ease-in-out infinite;
+      }
+      #initial-loader .il-blob.b3 {
+        width: 200px;
+        height: 200px;
+        bottom: 8%;
+        left: 6%;
+        background: #f59e0b;
+        animation: il-float-c 10s ease-in-out infinite;
+      }
+
+      #initial-loader .il-stack {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 26px;
+      }
+
+      /* orbit assembly */
+      #initial-loader .il-orbit {
+        position: relative;
+        width: 168px;
+        height: 168px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #initial-loader .il-guide {
+        position: absolute;
+        inset: 0;
+        margin: auto;
+        width: 136px;
+        height: 136px;
+        border-radius: 50%;
+        border: 1.5px dashed #dfe4ec;
+      }
+      #initial-loader .il-halo {
+        position: absolute;
+        inset: 0;
+        margin: auto;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.38) 0%, rgba(99, 102, 241, 0) 72%);
+        animation: il-halo-pulse 2.2s ease-in-out infinite;
+      }
+      #initial-loader .il-ring {
+        position: absolute;
+        inset: 0;
+        margin: auto;
+        width: 136px;
+        height: 136px;
+        border-radius: 50%;
+        border: 3px solid transparent;
+        border-top-color: #6366f1;
+        border-right-color: #a5b4fc;
+        animation: il-rotate 1.1s cubic-bezier(0.5, 0.05, 0.5, 0.95) infinite;
+      }
+      #initial-loader .il-satellites {
+        position: absolute;
+        inset: 0;
+        margin: auto;
+        width: 136px;
+        height: 136px;
+        animation: il-rotate 7s linear infinite;
+      }
+      #initial-loader .il-sat-pos {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+      }
+      #initial-loader .il-sat-pos.p1 {
+        transform: rotate(0deg) translate(68px);
+      }
+      #initial-loader .il-sat-pos.p2 {
+        transform: rotate(120deg) translate(68px);
+      }
+      #initial-loader .il-sat-pos.p3 {
+        transform: rotate(240deg) translate(68px);
+      }
+      #initial-loader .il-sat {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.16);
+        animation: il-counter-rotate 7s linear infinite;
+      }
+      #initial-loader .il-sat svg {
+        width: 15px;
+        height: 15px;
+      }
+      #initial-loader .il-sat.book {
+        background: linear-gradient(135deg, #6366f1, #4f46e5);
+      }
+      #initial-loader .il-sat.pencil {
+        background: linear-gradient(135deg, #f59e0b, #ea580c);
+      }
+      #initial-loader .il-sat.cap {
+        background: linear-gradient(135deg, #10b981, #059669);
+      }
+      #initial-loader .il-logo {
+        position: relative;
+        width: 54px;
+        height: 54px;
+        object-fit: contain;
+        animation: il-pulse 2.2s ease-in-out infinite;
+        filter: drop-shadow(0 6px 14px rgba(79, 70, 229, 0.3));
+      }
+
+      /* brand text */
+      #initial-loader .il-title {
+        font-family: 'Poppins', sans-serif;
+        font-size: 20px;
+        font-weight: 600;
+        color: #1f2937;
+        letter-spacing: 0.2px;
+        text-align: center;
+      }
+      #initial-loader .il-title span {
+        background: linear-gradient(90deg, #6366f1, #4f46e5);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      /* progress sweep */
+      #initial-loader .il-progress {
+        position: relative;
+        width: 190px;
+        height: 4px;
+        border-radius: 4px;
+        background: #eef2f6;
+        overflow: hidden;
+      }
+      #initial-loader .il-progress::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -40%;
+        width: 40%;
+        height: 100%;
+        border-radius: 4px;
+        background: linear-gradient(90deg, transparent, #6366f1, #10b981, transparent);
+        animation: il-sweep 1.6s ease-in-out infinite;
+      }
+
+      @keyframes il-rotate {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      #initial-loader .il-satellites {
+        transform-origin: center;
+      }
+      @keyframes il-counter-rotate {
+        from {
+          transform: translate(-50%, -50%) rotate(0deg);
+        }
+        to {
+          transform: translate(-50%, -50%) rotate(-360deg);
+        }
+      }
+      @keyframes il-pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.06);
+          opacity: 0.9;
+        }
+      }
+      @keyframes il-halo-pulse {
+        0%,
+        100% {
+          transform: scale(0.85);
+          opacity: 0.7;
+        }
+        50% {
+          transform: scale(1.15);
+          opacity: 1;
+        }
+      }
+      @keyframes il-sweep {
+        0% {
+          left: -40%;
+        }
+        100% {
+          left: 100%;
+        }
+      }
+      @keyframes il-float-a {
+        0%,
+        100% {
+          transform: translate(0, 0);
+        }
+        50% {
+          transform: translate(26px, 20px);
+        }
+      }
+      @keyframes il-float-b {
+        0%,
+        100% {
+          transform: translate(0, 0);
+        }
+        50% {
+          transform: translate(-22px, -18px);
+        }
+      }
+      @keyframes il-float-c {
+        0%,
+        100% {
+          transform: translate(0, 0);
+        }
+        50% {
+          transform: translate(16px, -14px);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #initial-loader .il-blob,
+        #initial-loader .il-ring,
+        #initial-loader .il-satellites,
+        #initial-loader .il-sat,
+        #initial-loader .il-logo,
+        #initial-loader .il-halo,
+        #initial-loader .il-progress::after {
+          animation: none;
+        }
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/index-ZAibLVhS.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/index--zTqZYGM.css">
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="initial-loader" aria-live="polite" aria-busy="true">
+      <span class="il-blob b1"></span>
+      <span class="il-blob b2"></span>
+      <span class="il-blob b3"></span>
+
+      <div class="il-stack">
+        <div class="il-orbit">
+          <span class="il-guide"></span>
+          <span class="il-halo"></span>
+          <span class="il-ring"></span>
+
+          <div class="il-satellites">
+            <div class="il-sat-pos p1">
+              <div class="il-sat book">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M4 5.5C4 4.67 4.67 4 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5v-13Z" fill="#fff" />
+                  <path d="M20 5.5c0-.83-.67-1.5-1.5-1.5H13v16h5.5c.83 0 1.5-.67 1.5-1.5v-13Z" fill="#fff" opacity="0.85" />
+                </svg>
+              </div>
+            </div>
+            <div class="il-sat-pos p2">
+              <div class="il-sat pencil">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <g transform="rotate(45 12 12)">
+                    <rect x="4" y="10.5" width="13" height="3" rx="1.2" fill="#fff" />
+                    <polygon points="17,10.3 20,12 17,13.7" fill="#fff" />
+                    <rect x="2" y="10.5" width="2.4" height="3" rx="0.6" fill="#fff" opacity="0.7" />
+                  </g>
+                </svg>
+              </div>
+            </div>
+            <div class="il-sat-pos p3">
+              <div class="il-sat cap">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <polygon points="12,5 22,10 12,15 2,10" fill="#fff" />
+                  <rect x="9" y="14" width="6" height="4" rx="1" fill="#fff" opacity="0.9" />
+                  <line x1="19" y1="10.5" x2="19" y2="16" stroke="#fff" stroke-width="1.4" stroke-linecap="round" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <img class="il-logo" src="/assets/mobile-logo-BrpvJlLh.png" alt="DayScholor" />
+        </div>
+
+        <div class="il-title">Day<span>Scholor</span></div>
+
+        <div class="il-progress"></div>
+      </div>
+    </div>
     <div id="root"></div>
     <!--
           This HTML file is a template.
